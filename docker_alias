@@ -1,0 +1,1 @@
+alias docker-exec='docker run -it -v configurations_main:/ext_mount   --detach-keys="ctrl-@" conff:latest'
