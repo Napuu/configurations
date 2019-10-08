@@ -6,6 +6,8 @@ sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:neovim-ppa/stable
 sudo apt-get update
 sudo apt-get install neovim
+# OR: 
+# sudo apt-get install python3-neovim
 ```
 
 Copy `nvim` to `~/.local/share/nvim` - nvim runtime things
