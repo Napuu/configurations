@@ -1,44 +1,60 @@
 FROM ubuntu:18.04
 
-
 RUN apt-get update -y
-RUN apt-get install software-properties-common curl git -yq
+RUN apt-get install software-properties-common curl git sudo -yq
 RUN add-apt-repository ppa:neovim-ppa/stable -y
-RUN apt-get update -y
-# install with software-properties-common failed for some reason
-RUN apt-get install tmux -y
+RUN add-apt-repository ppa:ubuntugis/ppa -y
+RUN apt-get update --fix-missing -y
+RUN apt-get install neovim wget tmux bash-completion gdal-bin libgdal-dev python3.6-dev docker.io locales build-essential cmake p7zip-full docker-compose postgresql-client htop mdp --fix-missing -y
 
-RUN apt-get install neovim -yq
-RUN adduser sohva --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-RUN echo "sohva:iowe38" | chpasswd
-WORKDIR /ext_mount
-RUN mkdir /usr/local/nvm
-# install latest node 
-ENV NVM_DIR /usr/local/nvm
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash
-ENV NODE_VERSION v10.16.0
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV GO_VERSION go1.13.5.linux-amd64
+RUN wget -q https://dl.google.com/go/$GO_VERSION.tar.gz -O /tmp/$GO_VERSION.tar.gz
+RUN tar -C /usr/local -xzf /tmp/$GO_VERSION.tar.gz
 
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+RUN locale-gen en_GB.UTF-8
+ENV LANG en_GB.UTF-8
+ENV LANGUAGE en_GB:en
+ENV LC_ALL en_GB.UTF-8
 
-# install neovim and configure plugins
-RUN npm i -g neovim
+RUN adduser pultti --gecos "" --disabled-password
+RUN echo "pultti:iowe38" | chpasswd
+RUN adduser pultti sudo && adduser pultti docker
 
-RUN mkdir -p .local/share/
-RUN mkdir -p .config/nvim/
-COPY neovim/nvim /home/sohva/.local/share/nvim
-COPY neovim/init.vim /home/sohva/.config/nvim/
-RUN chown -R sohva /ext_mount*
-RUN chown -R sohva /home/sohva*
-RUN chown -R sohva /usr/local*
-USER sohva
-# some plugins are broken (tsc) but is fine :-)
-RUN nvim +PlugInstall +qall > /dev/null
-RUN nvim +UpdateRemotePlugins +qall > /dev/null
+USER pultti
+WORKDIR /home/pultti
 
-VOLUME /ext_mount
-COPY tmux/tmux.conf /home/sohva/.tmux.conf
+ENV NVM_DIR "/home/pultti/.nvm"
+ENV NODE_VERSION 12.13.1
+RUN curl https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash \
+    && . $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
+ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/v$NODE_VERSION/bin:$PATH
 
-#CMD /usr/bin/tmux
-CMD tail -f /dev/null
+RUN mkdir -p ~/.config/nvim
+RUN mkdir -p ~/.local/nvim
+RUN curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+COPY neovim/init.vim /home/pultti/.config/nvim/init.vim
+RUN vim +silent +PlugInstall +qall
+
+COPY tmux/tmux.conf .tmux.conf
+# making sure bashrc is sourced
+RUN echo "source \"$HOME/.bashrc\"" >> .bash_profile
+RUN echo "source \"$HOME/.profile\"" >> .bash_profile
+
+ENV PATH $PATH:/usr/local/go/bin
+RUN vim +GoInstallBinaries +qall
+
+RUN echo "ln -sfn /home/pultti/workdir/ssh /home/pultti/.ssh" >> .bashrc
+
+RUN touch ~/.sudo_as_admin_successful
+
+ENV PATH $PATH:/home/pultti/.nvm/versions/node/v$NODE_VERSION/bin
+RUN cd /home/pultti/.vim/plugged/YouCompleteMe && python3 install.py --clang-completer --go-completer --ts-completer
+
+RUN git config --global user.email "santeri.j.kaariainen@gmail.com" && git config --global user.name "Santeri Kääriäinen"
+
+CMD tmux
