@@ -17,6 +17,9 @@ autocmd FileType .go |
 " autocomplete
 Plug 'Valloric/YouCompleteMe'
 
+" table formatter
+Plug 'dhruvasagar/vim-table-mode'
+
 " misc
 
 set tabstop=2
