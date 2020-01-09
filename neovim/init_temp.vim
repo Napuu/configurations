@@ -22,24 +22,18 @@ Plug 'dhruvasagar/vim-table-mode'
 " color theme
 Plug 'altercation/vim-colors-solarized'
 
-" ctags stuff
 Plug 'majutsushi/tagbar'
 nmap <Leader>b :TagbarToggle<CR>
 Plug 'kien/ctrlp.vim'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
-nnoremap <leader>tf :CtrlP<cr>
-nnoremap <leader>ty :CtrlPTag<cr>
+nnoremap <leader>t :CtrlPTag<cr>
 
-" ranger integration
 Plug 'francoiscabrol/ranger.vim'
 Plug 'rbgrouleff/bclose.vim'
 
-" nice bottom bar
-Plug 'vim-airline/vim-airline'
-
-" misc
 imap ii <Esc>
+" misc
 
 set tabstop=2
 set shiftwidth=2

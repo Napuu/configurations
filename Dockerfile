@@ -5,8 +5,8 @@ RUN apt-get update -y
 RUN apt-get install software-properties-common curl git sudo -yq
 RUN add-apt-repository ppa:neovim-ppa/stable -y
 RUN add-apt-repository ppa:ubuntugis/ppa -y
-RUN apt-get update --fix-missing -y
-RUN apt-get install neovim wget tmux bash-completion gdal-bin libgdal-dev python3.6-dev docker.io locales build-essential cmake p7zip-full docker-compose postgresql-client htop mdp postgis --fix-missing -y
+RUN apt-get update -y
+RUN apt-get install neovim wget tmux bash-completion gdal-bin libgdal-dev python3.6-dev docker.io locales build-essential cmake p7zip-full docker-compose postgresql-client htop mdp postgis ranger exuberant-ctags -y
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.17.0/bin/linux/amd64/kubectl
@@ -59,6 +59,8 @@ RUN echo "source \"$HOME/.profile\"" >> .bash_profile
 
 ENV PATH $PATH:/usr/local/go/bin
 RUN vim +GoInstallBinaries +qall
+RUN touch ~/.vimtags
+RUN chown pultti:pultti ~/.vimtags
 
 RUN echo "ln -sfn /home/pultti/workdir/ssh /home/pultti/.ssh" >> .bashrc
 
