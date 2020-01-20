@@ -16,6 +16,9 @@ autocmd FileType .go |
 " autocomplete
 Plug 'Valloric/YouCompleteMe'
 
+" typescript 
+Plug 'leafgarland/typescript-vim'
+
 " table formatter
 Plug 'dhruvasagar/vim-table-mode'
 
@@ -23,8 +26,6 @@ Plug 'dhruvasagar/vim-table-mode'
 Plug 'altercation/vim-colors-solarized'
 
 " ctags stuff
-Plug 'majutsushi/tagbar'
-nmap <Leader>b :TagbarToggle<CR>
 Plug 'kien/ctrlp.vim'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
@@ -38,8 +39,15 @@ Plug 'rbgrouleff/bclose.vim'
 " nice bottom bar
 Plug 'vim-airline/vim-airline'
 
+" better search and replace
+Plug 'brooth/far.vim'
+
+" project management
+Plug 'vimwiki/vimwiki'
+Plug 'tpope/vim-fugitive'
+
 " misc
-imap ii <Esc>
+imap <Space><Space> <Esc>
 
 set tabstop=2
 set shiftwidth=2
@@ -49,4 +57,4 @@ call plug#end()
 " color theme things outside plug
 syntax enable
 set background=dark
-colorscheme solarized
+colorscheme delek
