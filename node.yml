@@ -1,0 +1,58 @@
+- name: Install the gpg key for nodejs LTS
+  become_user: root
+  apt_key:
+    url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    state: present
+
+- name: Install the nodejs LTS repos
+  become_user: root
+  apt_repository:
+    repo: "deb https://deb.nodesource.com/node_{{ NODEJS_VERSION }}.x {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: yes
+
+- name: Clean
+  become_user: root
+  shell: >
+    apt-get clean -y
+  args:
+    warn: false
+
+- name: Install the nodejs
+  become_user: root
+  register: task_result
+  until: task_result.failed == false
+  retries: 10 # :D
+  delay: 10
+  ignore_errors: yes
+  apt:
+    name: nodejs
+    state: present
+    
+- name: Set npm prefix
+  shell: >
+    npm config set prefix {{ ansible_env.HOME }}/.npm
+    
+- name: Flush npm cache
+  shell: >
+    npm cache clean --force
+
+- name: Install typescript from npm
+  npm:
+    name: typescript
+    global: yes
+
+- name: Install neovim from npm
+  npm:
+    name: neovim
+    global: yes
+
+- name: Install http-server from npm
+  npm:
+    name: http-server
+    global: yes
+
+- name: Install prettier from npm
+  npm:
+    name: prettier
+    global: yes

@@ -1,0 +1,27 @@
+- name: Test
+  hosts: all
+  become: true
+  vars:
+    NODEJS_VERSION: "12"
+  tasks:
+    - name: Install tools
+      apt: 
+        name: ['tmux', 'ranger', 'exuberant-ctags', 'git', 'curl', 'neovim', 'dos2unix', 'xfce4']
+
+    - name: Install common dependencies
+      apt: 
+        name: ['build-essential', 'cmake', 'python3-dev'] #, 'libpython3.7-dev']
+
+    
+
+    
+
+    # - name: Install node 
+    #   shell: >
+    #     curl -sL https://deb.nodesource.com/setup_{{ NODEJS_VERSION }}.x | sudo -E bash - && sudo apt-get install -y nodejs
+    
+    # - name: Install node 
+    #   shell: |
+    #     curl -sL https://deb.nodesource.com/setup_{{ NODEJS_VERSION }}.x | -E bash - && apt-get install -y nodejs
+    #   args:
+    #     warn: false
