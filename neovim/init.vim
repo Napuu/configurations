@@ -45,9 +45,12 @@ Plug 'brooth/far.vim'
 " project management
 Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-fugitive'
+Plug 'preservim/nerdtree'
 
 " misc
 imap <Space><Space> <Esc>
+
+nnoremap <Space>w <C-w>
 
 set tabstop=2
 set shiftwidth=2
